@@ -1,0 +1,22 @@
+# server:
+#   port: 8083
+# eureka:
+#   client:
+#     fetch-registry: true
+#     registry-with-eureka: true
+#     service-url:
+#       default-zone: http://localhost:8761/eureka
+#   instance:
+#     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+server:
+  port: ${SLA_ADMIN_PORT:8083}
+eureka:
+  hostname: slaeureka
+  client:
+    fetchRegistry: true
+    registryWithEureka: true
+    serviceUrl:
+      defaultZone: http://slaeureka:${SLA_EUREKA_PORT:8761}/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

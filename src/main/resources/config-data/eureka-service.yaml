@@ -1,0 +1,20 @@
+# server:
+#   port: 8761
+
+# eureka:
+#   client:
+#     fetch-registry: false
+#     registry-with-eureka: false
+#     service-url:
+#       default-zone: http://localhost:${server.port}/eureka/
+
+server:
+  port: ${SLA_EUREKA_PORT:8761}
+
+eureka:
+  hostname: slaeureka
+  client:
+    fetchRegistry: false
+    registryWithEureka: false
+    serviceUrl:
+      defaultZone: http://slaeureka:${server.port}/eureka/

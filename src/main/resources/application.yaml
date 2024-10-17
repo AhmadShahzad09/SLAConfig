@@ -1,0 +1,26 @@
+server:
+  port: ${SLA_CONFIG_PORT:8081}
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: classpath:config-data
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - HEAD
+        addToSimpleUrlHandlerMapping: true
+  application:
+    name: config-service

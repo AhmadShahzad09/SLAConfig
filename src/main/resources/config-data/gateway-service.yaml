@@ -1,0 +1,93 @@
+# server:
+#   port: 8080
+
+# eureka:
+#   client:
+#     fetch-registry: true
+#     registry-with-eureka: true
+#     service-url:
+#       default-zone: http://localhost:8761/eureka
+#   instance:
+#     hostname: localhost
+
+# spring:
+#   cloud:
+#     gateway:
+#       discovery:
+#         locator:
+#           enable: true
+#       routes:
+#         - id: auth-service
+#           uri: lb://auth-service
+#           predicates:
+#             - Path=/auth/**
+#         - id: administration-service
+#           uri: lb://administration-service
+#           predicates:
+#             - Path=/administration/**
+#           filters:
+#             - AuthFilter
+
+server:
+  port: ${SLA_GATEWAY_PORT:8080}
+
+eureka:
+  hostname: slaeureka
+  client:
+    fetchRegistry: true
+    registryWithEureka: true
+    serviceUrl:
+      defaultZone: http://slaeureka:${SLA_EUREKA_PORT:8761}/eureka/
+  instance:
+    hostname: slaeureka
+
+spring:
+  cloud:
+    gateway:
+      defaultFilters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      discovery:
+        locator:
+          enable: true
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+        - id: administration-service
+          uri: lb://administration-service
+          predicates:
+            - Path=/administration/**
+          filters:
+            - AuthFilter
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+        - id: load-service
+          uri: lb://load-service
+          predicates:
+            - Path=/load/**
+          filters:
+            - AuthFilter
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "${SLA_ALLOWED_ORIGINS}"
+            allowedHeaders:
+              - '*' 
+              - Authorization
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - HEAD
+            exposedHeaders:
+              - Authorization-Token
+              - Authorization-RefreshToken
+              - Content-Disposition
+              - Export-Message
+            allowCredentials: true
+        addToSimpleUrlHandlerMapping: true
